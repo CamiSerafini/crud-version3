@@ -8,7 +8,9 @@
 *    Iteration   : 3.0 ( prototype )
 */
 
-import { studentsAPI } from '../api/studentsAPI.js';
+// Si yo en html no usaba type="module" con este archivo, no me funcionaría el siguiente import
+import { studentsAPI } from '../api/studentsAPI.js'; 
+// lo utiliza para acceder al backend y poder crear, obtener, actualizar y borrar datos (delegando esto a la API)
 
 document.addEventListener('DOMContentLoaded', () => 
 {
