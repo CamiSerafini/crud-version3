@@ -9,9 +9,11 @@
 *    Iteration   : 3.0 ( prototype )
 */
 
-require_once("./config/databaseConfig.php");
-require_once("./routes/routesFactory.php");
-require_once("./controllers/studentsController.php");
+//este archivo actua como puente entre la solicitud que llega del frontend y el controlador que se encarga de procesarla
+
+require_once("./config/databaseConfig.php"); //datos para la conexion a base de datos
+require_once("./routes/routesFactory.php"); //// con funcion routeRequest que gestiona las rutas generales para GET, POST, etc.
+require_once("./controllers/studentsController.php"); //contiene funciones para consultar, insertar, modificar o borrar, en este caso estudiantes.
 
 // routeRequest($conn);
 
@@ -21,7 +23,7 @@ require_once("./controllers/studentsController.php");
  * para casos particulares
  * o validaciones:
  */
-routeRequest($conn, [
+routeRequest/*funcion definida en routesFactory.php*/($conn, [
     'POST' => function($conn) 
     {
         // Validación o lógica extendida
@@ -32,6 +34,6 @@ routeRequest($conn, [
             echo json_encode(["error" => "Falta el nombre"]);
             return;
         }
-        handlePost($conn);
+        handlePost($conn); //definida en studentsController.php
     }
 ]);
