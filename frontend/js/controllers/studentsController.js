@@ -11,12 +11,15 @@
 // Si yo en html no usaba type="module" con este archivo, no me funcionaría el siguiente import
 import { studentsAPI } from '../api/studentsAPI.js'; 
 // lo utiliza para acceder al backend y poder crear, obtener, actualizar y borrar datos (delegando esto a la API)
+// studentsAPI es una constante creada en esa URL (justo la url y constante se llaman igual)
 
 document.addEventListener('DOMContentLoaded', () => 
+// espera a que termine de cargar el html completo
 {
-    loadStudents();
-    setupFormHandler();
-    setupCancelHandler();
+    // las siguientes 3 funciones estan en este mismo .js
+    loadStudents(); //esta es la funcion que carga y muestra a todos los estudiantes en la tabla
+    setupFormHandler(); //prepara el form. para que al "guardar" se capture y procese la info
+    setupCancelHandler(); //configura el comportamiento del boton cancelar
 });
   
 function setupFormHandler()
@@ -24,25 +27,25 @@ function setupFormHandler()
     const form = document.getElementById('studentForm');
     form.addEventListener('submit', async e => 
     {
-        e.preventDefault();
-        const student = getFormData();
+        e.preventDefault(); //al enviarse el formulario no se recarga la pagina
+        const student = getFormData(); //funcion que esta en este mismo archivo, me trae el id del formulario
     
         try 
         {
-            if (student.id) 
+            if (student.id) //si existe
             {
-                await studentsAPI.update(student);
+                await studentsAPI.update(student); //lo edita, esto esta en el apiFactory pero lo importo desde studentsAPI
             } 
             else 
             {
-                await studentsAPI.create(student);
+                await studentsAPI.create(student); //lo crea, esto esta en el apiFactory pero lo importo desde studentsAPI
             }
-            clearForm();
-            loadStudents();
+            clearForm(); //limpia el formulario, funcion en este mismo archivo
+            loadStudents(); // vuelve a cargarme los estudiantes en la tabla para actualizar lo que sea que haya hecho
         }
         catch (err)
         {
-            console.error(err.message);
+            console.error(err.message); //error inesperado para el cual no fue preparado el programa
         }
     });
 }
@@ -52,32 +55,32 @@ function setupCancelHandler()
     const cancelBtn = document.getElementById('cancelBtn');
     cancelBtn.addEventListener('click', () => 
     {
-        document.getElementById('studentId').value = '';
+        document.getElementById('studentId').value = ''; //se borra el valor del campo oculto studentId, era el Id del input con hidden del html
     });
 }
   
-function getFormData()
+function getFormData() //se crea un objeto con los datos del formulario
 {
     return {
-        id: document.getElementById('studentId').value.trim(),
+        id: document.getElementById('studentId').value.trim(), //trim me elimina los espacios en blanco al final y principio de un texto
         fullname: document.getElementById('fullname').value.trim(),
         email: document.getElementById('email').value.trim(),
-        age: parseInt(document.getElementById('age').value.trim(), 10)
+        age: parseInt(document.getElementById('age').value.trim(), 10) //me lo convierte a entero en base decimal
     };
 }
   
 function clearForm()
 {
-    document.getElementById('studentForm').reset();
-    document.getElementById('studentId').value = '';
+    document.getElementById('studentForm').reset(); //limpia todos los campos del formulario
+    document.getElementById('studentId').value = ''; //se borra el valor del campo oculto para que no se reutilice cuando se haga una nueva alta
 }
   
 async function loadStudents()
 {
     try 
     {
-        const students = await studentsAPI.fetchAll();
-        renderStudentTable(students);
+        const students = await studentsAPI.fetchAll(); //para obtener todos los estudiantes desde el backend
+        renderStudentTable(students); //en este mismo archivo
     } 
     catch (err) 
     {
@@ -88,25 +91,25 @@ async function loadStudents()
 function renderStudentTable(students)
 {
     const tbody = document.getElementById('studentTableBody');
-    tbody.replaceChildren();
+    tbody.replaceChildren(); //elimina las filas anteriores para empezar desde cero
   
-    students.forEach(student => 
+    students.forEach(student => //por cada estudiante me va a agregar una fila
     {
         const tr = document.createElement('tr');
     
-        tr.appendChild(createCell(student.fullname));
+        tr.appendChild(createCell(student.fullname)); //en la fila me va a agregar las celdas
         tr.appendChild(createCell(student.email));
         tr.appendChild(createCell(student.age.toString()));
         tr.appendChild(createActionsCell(student));
     
-        tbody.appendChild(tr);
+        tbody.appendChild(tr); //agrego la fila al body
     });
 }
   
 function createCell(text)
 {
     const td = document.createElement('td');
-    td.textContent = text;
+    td.textContent = text; //usar textContent. NUNCA INNER HTML para evitar la ejecución de scripts mailiciosos y el robo de info (ataques XSS).
     return td;
 }
   
@@ -117,7 +120,7 @@ function createActionsCell(student)
     const editBtn = document.createElement('button');
     editBtn.textContent = 'Editar';
     editBtn.className = 'w3-button w3-blue w3-small';
-    editBtn.addEventListener('click', () => fillForm(student));
+    editBtn.addEventListener('click', () => fillForm(student)); //si hace click me agrega los datos en el fomrulario para editar lo que quiera
   
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = 'Borrar';
@@ -139,12 +142,12 @@ function fillForm(student)
   
 async function confirmDelete(id) 
 {
-    if (!confirm('¿Estás seguro que deseas borrar este estudiante?')) return;
+    if (!confirm('¿Estás seguro que deseas borrar este estudiante?')) return; //si pone cancelar no hace nada pero si acepta sigue con lo siguiente
   
     try 
     {
-        await studentsAPI.remove(id);
-        loadStudents();
+        await studentsAPI.remove(id); //esta en el otro archivo
+        loadStudents(); //me actualiza los cambios
     } 
     catch (err) 
     {

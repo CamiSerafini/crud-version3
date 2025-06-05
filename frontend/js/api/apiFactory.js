@@ -8,9 +8,12 @@
 *    Iteration   : 3.0 ( prototype )
 */
 
-export function createAPI(moduleName, config = {}) 
+export function createAPI(moduleName, config = {})  //recibe dos parametros, el nombre del modulo que le pase "students" por ejemplo de studentsAPI. Y config que por defecto esta vacio pero permite configurar opciones mas avanzadas en caso de que fuera necesario.
 {
     const API_URL = config.urlOverride ?? `../../backend/server.php?module=${moduleName}`;
+    //?? si el de la izquierda es null o undefined usa el de la derecha que ahora tiene sentido el moduleName-->
+    //en studensAPI yo pase de la nada "students" pero ahora cuando yo lo lo tengo como parametro y use en server tiene sentido-->
+    //porque en server despues se hacen cambios con la URL
 
     async function sendJSON(method, data) 
     {
@@ -28,9 +31,9 @@ export function createAPI(moduleName, config = {})
     return {
         async fetchAll()
         {
-            const res = await fetch(API_URL);
+            const res = await fetch(API_URL); //obtiene todos los registros del modulo desde el servidor
             if (!res.ok) throw new Error("No se pudieron obtener los datos");
-            return await res.json();
+            return await res.json(); //retorna convertidos en un objeto json
         },
         async create(data)
         {
