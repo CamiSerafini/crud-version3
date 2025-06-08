@@ -9,6 +9,8 @@
 *    Iteration   : 3.0 ( prototype )
 */
 
+// Se encarga de gestionar las rutas REST (GET,POST,PUT,DELETE) y de conectar cada métoddo HTTP con la funcion que debe ejecutarse.
+
 function routeRequest($conn, $customHandlers = [], $prefix = 'handle') 
 {
     $method = $_SERVER['REQUEST_METHOD'];
@@ -43,3 +45,4 @@ function routeRequest($conn, $customHandlers = [], $prefix = 'handle')
         echo json_encode(["error" => "Handler para $method no es válido"]);
     }
 }
+?>

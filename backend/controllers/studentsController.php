@@ -13,16 +13,16 @@ require_once("./models/students.php");
 
 function handleGet($conn) 
 {
-    $input = json_decode(file_get_contents("php://input"), true);
+    $input = json_decode(file_get_contents("php://input"), true); //para poder filtrar el id
     
-    if (isset($input['id'])) 
+    if (isset($input['id']))  //si lo contiene entonces busca ese unico estudiante
     {
-        $student = getStudentById($conn, $input['id']);
+        $student = getStudentById($conn, $input['id']); //en models
         echo json_encode($student);
     } 
-    else
+    else //y sino me trae todos los estudiantes
     {
-        $students = getAllStudents($conn);
+        $students = getAllStudents($conn); 
         echo json_encode($students);
     }
 }

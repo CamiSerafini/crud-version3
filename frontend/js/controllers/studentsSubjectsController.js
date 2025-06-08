@@ -34,6 +34,7 @@ async function initSelects()
             option.textContent = s.fullname;
             studentSelect.appendChild(option);
         });
+        //con esto caga estudiante se agrega como <option value="ID">Nombre</option>, lo mismo para materias mas abajo
 
         // Cargar materias
         const subjects = await subjectsAPI.fetchAll();
@@ -86,7 +87,7 @@ function setupCancelHandler()
     const cancelBtn = document.getElementById('cancelBtn');
     cancelBtn.addEventListener('click', () => 
     {
-        document.getElementById('relationId').value = '';
+        document.getElementById('relationId').value = ''; //no se pone numero! 
     });
 }
 
