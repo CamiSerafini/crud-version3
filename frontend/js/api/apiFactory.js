@@ -15,18 +15,35 @@ export function createAPI(moduleName, config = {})  //recibe dos parametros, el 
     //en studensAPI yo pase de la nada "students" pero ahora cuando yo lo lo tengo como parametro y use en server tiene sentido-->
     //porque en server despues se hacen cambios con la URL
 
-    async function sendJSON(method, data) 
-    {
-        const res = await fetch(API_URL,
-        {
+    //GUÍA 7: cambios en sendJSON para inciso a
+    async function sendJSON(method, data) {
+        const res = await fetch(API_URL, {
             method,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
 
-        if (!res.ok) throw new Error(`Error en ${method}`);
-        return await res.json();
+        //variable en donde voy a guardar el resultado que devuelva el servidor
+        let resJson = null;
+        try {
+            resJson = await res.json();
+        } catch {
+            // Por si la respuesta no es JSON, resJson se queda null
+        }
+
+        if (!res.ok) {
+            // Aquí revisamos si resJson tiene el error para mostrar
+            if (resJson && resJson.error) {
+                throw new Error(resJson.error);
+            } else {
+                throw new Error(`Error en ${method}`);
+            }
+        }
+
+        return resJson;
     }
+
+
 
     return {
         async fetchAll()

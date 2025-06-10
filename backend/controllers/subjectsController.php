@@ -30,18 +30,40 @@ function handleGet($conn)
 function handlePost($conn) 
 {
     $input = json_decode(file_get_contents("php://input"), true);
+    $name = $input['name'];
 
-    $result = createSubject($conn, $input['name']);
-    if ($result['inserted'] > 0) 
+    try 
     {
-        echo json_encode(["message" => "Materia creada correctamente"]);
+        $result = createSubject($conn, $name);
+
+        if ($result['inserted'] > 0) 
+        {
+            echo json_encode(["message" => "Materia creada correctamente"]);
+        } 
+        else 
+        {
+            http_response_code(500);
+            echo json_encode(["error" => "No se pudo crear"]);
+        }
     } 
-    else 
+    //GUIA 7: Mejor manejo de errores en el catch para el punto a de la guía 7
+    //continua con cambios para este inciso en JavaScript apiFactory.js
+    catch (mysqli_sql_exception $e) 
     {
-        http_response_code(500);
-        echo json_encode(["error" => "No se pudo crear"]);
+        //tiene en cuenta el error lanzado de MySQL
+        if ($e->getCode() === 1062) // Código de error de MySQL para clave duplicada
+        {
+            http_response_code(400); // Error del cliente
+            echo json_encode(["error" => "Ya existe una materia con ese nombre"]);
+        } 
+        else 
+        {
+            http_response_code(500);
+            echo json_encode(["error" => "Error del servidor: " . $e->getMessage()]);
+        }
     }
 }
+
 
 function handlePut($conn) 
 {

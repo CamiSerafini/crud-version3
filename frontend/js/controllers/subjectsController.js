@@ -20,36 +20,46 @@ document.addEventListener('DOMContentLoaded', () =>
 function setupSubjectFormHandler() 
 {
   const form = document.getElementById('subjectForm');
+  
   form.addEventListener('submit', async e => 
   {
-        e.preventDefault();
-        const subject = 
-        {
-            id: document.getElementById('subjectId').value.trim(),
-            name: document.getElementById('name').value.trim()
-        };
+    e.preventDefault();
+    const subject = {
+      id: document.getElementById('subjectId').value.trim(),
+      name: document.getElementById('name').value.trim()
+    };
 
-        try 
-        {
-            if (subject.id) 
-            {
-                await subjectsAPI.update(subject);
-            }
-            else
-            {
-                await subjectsAPI.create(subject);
-            }
-            
-            form.reset();
-            document.getElementById('subjectId').value = '';
-            loadSubjects();
-        }
-        catch (err)
-        {
-            console.error(err.message);
-        }
+    try 
+    {
+      if (subject.id) 
+      {
+        await subjectsAPI.update(subject);
+      } 
+      else 
+      {
+        await subjectsAPI.create(subject);
+      }
+
+      form.reset();
+      document.getElementById('subjectId').value = '';
+      loadSubjects();
+    } 
+    //GUÍA 7: modificacion en catch para inciso a
+    catch (err) //err representa el error que fue lanzando en el bloque try
+    //fue arrojado por el throw en apiFactory.js
+    {
+      if (err.message.includes('Ya existe una materia')) 
+      {
+        alert('Ya existe una materia con ese nombre.');
+      } 
+      else 
+      {
+        console.error(err.message);
+      }
+    }
   });
 }
+
 
 function setupCancelHandler()
 {

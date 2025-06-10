@@ -9,6 +9,11 @@
 *    Iteration   : 3.0 ( prototype )
 */
 
+//*GUIA 7: la siguiente linea es para que los errores que son de MYSQL
+//como claves duplicadas cuando ponemos UNIQUE, se lancen como excepciones.
+//mysqli_sql_exception (continuo en subjectsController.php)
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
 $host = "localhost";
 $user = "students_user_3";
 $password = "12345";
