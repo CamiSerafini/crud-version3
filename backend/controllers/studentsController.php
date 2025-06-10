@@ -63,15 +63,25 @@ function handleDelete($conn)
 {
     $input = json_decode(file_get_contents("php://input"), true);
 
-    $result = deleteStudent($conn, $input['id']);
-    if ($result['deleted'] > 0) 
-    {
-        echo json_encode(["message" => "Eliminado correctamente"]);
-    } 
-    else 
-    {
-        http_response_code(500);
-        echo json_encode(["error" => "No se pudo eliminar"]);
-    }
+    try{
+        $result = deleteStudent($conn, $input['id']);
+        if ($result['deleted'] > 0) 
+        {
+            echo json_encode(["message" => "Eliminado correctamente"]);
+        } 
+        else 
+        {
+            http_response_code(500);
+            echo json_encode(["error" => "No se pudo eliminar"]);
+        }
+    } catch(mysqli_sql_exception $e){
+            if ($e->getCode() === 1451) { // Código de error por restricción de clave foránea
+                http_response_code(400);
+                echo json_encode(["error" => "No se puede eliminar: el estudiante está relacionado con materias."]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["error" => "Error del servidor: " . $e->getMessage()]);
+            }
+    }  
 }
 ?>

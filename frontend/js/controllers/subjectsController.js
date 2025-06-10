@@ -132,7 +132,7 @@ function createSubjectActionsCell(subject)
 async function confirmDeleteSubject(id)
 {
     if (!confirm('¿Seguro que deseas borrar esta materia?')) return;
-
+    console.log('Intentando eliminar')
     try
     {
         await subjectsAPI.remove(id);
@@ -140,6 +140,14 @@ async function confirmDeleteSubject(id)
     }
     catch (err)
     {
-        console.error('Error al borrar materia:', err.message);
+        if (err.message.includes('relacionada con estudiantes')) 
+        {
+            alert('No se puede eliminar: la materia está relacionado con estudiantes.');
+        } 
+        else 
+        {
+            alert('Ocurrió un error al borrar el estudiante.');
+            console.error('Error al borrar:', err.message);
+        }
     }
 }

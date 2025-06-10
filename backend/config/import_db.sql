@@ -42,6 +42,17 @@ CREATE TABLE `students_subjects` (
   CONSTRAINT `students_subjects_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+-- GUÍA 7 - INCISO C, sacando ON DELETE ON CASCADE
+ALTER TABLE students_subjects
+  DROP FOREIGN KEY students_subjects_ibfk_1,
+  DROP FOREIGN KEY students_subjects_ibfk_2;
+
+ALTER TABLE students_subjects
+  ADD CONSTRAINT students_subjects_ibfk_1 FOREIGN KEY (student_id) REFERENCES students(id),
+  ADD CONSTRAINT students_subjects_ibfk_2 FOREIGN KEY (subject_id) REFERENCES subjects(id);
+
+
+
 INSERT INTO `students_subjects` (`id`, `student_id`, `subject_id`, `approved`) VALUES
 (1,	1,	1,	1),
 (2,	2,	2,	0);

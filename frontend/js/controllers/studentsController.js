@@ -151,7 +151,15 @@ async function confirmDelete(id)
     } 
     catch (err) 
     {
-        console.error('Error al borrar:', err.message);
+        if (err.message.includes('relacionado con materias')) 
+        {
+            alert('No se puede eliminar: el estudiante está relacionado con materias.');
+        } 
+        else 
+        {
+            alert('Ocurrió un error al borrar el estudiante.');
+            console.error('Error al borrar:', err.message);
+        }
     }
 }
   
