@@ -17,19 +17,47 @@ function handleGet($conn)
     echo json_encode($studentsSubjects);
 }
 
-function handlePost($conn) 
-{
-    $input = json_decode(file_get_contents("php://input"), true);
+// function handlePost($conn) 
+// {
+//     $input = json_decode(file_get_contents("php://input"), true);
     
-    $result = assignSubjectToStudent($conn, $input['student_id'], $input['subject_id'], $input['approved']);
-    if ($result['inserted'] > 0) 
-    {
-        echo json_encode(["message" => "Asignación realizada"]);
-    } 
-    else 
-    {
-        http_response_code(500);
-        echo json_encode(["error" => "Error al asignar"]);
+//     $result = assignSubjectToStudent($conn, $input['student_id'], $input['subject_id'], $input['approved']);
+//     if ($result['inserted'] > 0) 
+//     {
+//         echo json_encode(["message" => "Asignación realizada"]);
+//     } 
+//     else 
+//     {
+//         http_response_code(500);
+//         echo json_encode(["error" => "Error al asignar"]);
+//     }
+// }
+
+function handlePost($conn) {
+    $input = json_decode(file_get_contents("php://input"), true);
+    try{
+        $result = assignSubjectToStudent($conn, $input['student_id'], $input['subject_id'], $input['approved']);
+        if ($result['inserted'] > 0) 
+        {
+            echo json_encode(["message" => "Asignación realizada"]);
+        } 
+        else 
+        {
+            http_response_code(500);
+            echo json_encode(["error" => "Error al asignar"]);
+        }
+    }
+    catch(mysqli_sql_exception $e) {
+        if ($e->getCode() === 1062) // Código de error de MySQL para clave duplicada
+        {
+            http_response_code(400); // Error del cliente
+            echo json_encode(["error" => "Ya existe una relacion"]);
+        } 
+        else 
+        {
+            http_response_code(500);
+            echo json_encode(["error" => "Error del servidor: " . $e->getMessage()]);
+        }
     }
 }
 

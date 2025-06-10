@@ -77,7 +77,14 @@ function setupFormHandler()
         } 
         catch (err) 
         {
-            console.error('Error guardando relación:', err.message);
+            if (err.message.includes("Ya existe una relacion")) 
+            {
+                alert('Ya existe una asignación así.');
+            } 
+            else 
+            {
+                console.error('Error guardando relación:', err.message);
+            }
         }
     });
 }
